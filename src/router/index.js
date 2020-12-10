@@ -1,6 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 
+function authGuard(to, from, next){
+  try{
+    const authToken = JSON.parse(atob(localStorage.getItem("token")))
+    console.log(authToken.token)
+    if(authToken && authToken.token){
+      next();
+    }else{
+      next({name: 'Login'})
+    }
+    
+
+  }catch(error){
+    localStorage.clear();
+    next({name: 'Login'});
+  }
+}
+
+
 const routes = [
   {
     path: '/',
@@ -38,8 +56,28 @@ const routes = [
   {
     path: '/admin',
     name: 'Admin',
-    component: () => import(/* webpackChunkName: "admin" */ '../views/admin/Admin.vue')
- 
+    component: () => import(/* webpackChunkName: "admin" */ '../views/admin/Admin.vue'),
+    beforeEnter: authGuard,
+    children: [
+      {
+        path: "producto",
+        name: 'Producto',
+        component: () => import(/* webpackChunkName: "producto" */ '../views/admin/Producto.vue')
+
+      },
+      {
+        path: "pedido",
+        name: 'Pedido',
+        component: () => import(/* webpackChunkName: "pedidos" */ '../views/admin/Pedidos.vue')
+
+      },
+      {
+        path: "cliente",
+        name: 'Cliente',
+        component: () => import(/* webpackChunkName: "cliente" */ '../views/admin/Cliente.vue')
+
+      }
+    ]
   }
 
 ]

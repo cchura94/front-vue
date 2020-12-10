@@ -1,8 +1,5 @@
 <template>
-  <h1>ADMINISTRADOR</h1>
-  
-  <router-view />
-  
+  <h1>Productos</h1>
 </template>
 
 <script>

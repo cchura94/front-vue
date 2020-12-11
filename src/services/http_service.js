@@ -1,16 +1,20 @@
 import axios from 'axios'
+import { getHeader, urlbase } from './../config'
 
 export function http(){
+    
     return axios.create({
-        baseURL: "http://127.0.0.1:3000"
+        baseURL: urlbase,
+        headers:getHeader()
     })
 }
 
 export function httpFile(){
     return axios.create({
-        baseURL: "http://127.0.0.1:3000",
-        headers: {
+        baseURL: urlbase,
+        headers:getHeader(),
+        /*headers: {
             'Content-Type': 'multipart/form-data'
-        }
+        }*/
     })
 }

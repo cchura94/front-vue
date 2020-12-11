@@ -11,5 +11,6 @@ export function guardar(datos) {
 
 //pendiente
 export function modificar(datos, id) {
-    return httpFile().put('/producto', datos);
+    return httpFile().put('/producto/'+id, datos);
 }
+

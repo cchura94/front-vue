@@ -1,5 +1,4 @@
 <template>
-  <h1>ADMINISTRADOR</h1>
   
   <router-view />
   

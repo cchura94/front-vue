@@ -1,11 +1,12 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 
 function authGuard(to, from, next){
   try{
     const authToken = JSON.parse(atob(localStorage.getItem("token")))
     console.log(authToken.token)
-    if(authToken && authToken.token){
+    //&& !auth.loggedIn()
+    if(authToken && authToken.token ){
       next();
     }else{
       next({name: 'Login'})
@@ -23,7 +24,8 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: {requireAuth: true}
   },
   {
     path: '/about',
@@ -31,7 +33,8 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    meta: {requireAuth: true}
   },
   {
     path: '/productos',
@@ -41,7 +44,8 @@ const routes = [
   {
     path: '/acerca',
     name: 'Acerca',
-    component: () => import(/* webpackChunkName: "acerca_de" */ '../views/cliente/Acerca.vue')
+    component: () => import(/* webpackChunkName: "acerca_de" */ '../views/cliente/Acerca.vue'),
+    
   },
   {
     path: '/contacto',
@@ -58,12 +62,13 @@ const routes = [
     name: 'Admin',
     component: () => import(/* webpackChunkName: "admin" */ '../views/admin/Admin.vue'),
     beforeEnter: authGuard,
+    meta: {requireAuth: true},
     children: [
       {
         path: "producto",
         name: 'Producto',
-        component: () => import(/* webpackChunkName: "producto" */ '../views/admin/Producto.vue')
-
+        component: () => import(/* webpackChunkName: "producto" */ '../views/admin/Producto.vue'),
+    beforeEnter: authGuard,
       },
       {
         path: "pedido",
@@ -83,8 +88,34 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  //history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  console.log(to)
+  console.log(from)
+  if(to.meta.requireAuth){
+
+    try{
+    const authToken = JSON.parse(atob(localStorage.getItem("token")))
+    console.log(authToken.token)
+    if(authToken && authToken.token){
+      next();
+    }else{
+      next({name: 'Login'})
+    }
+    
+
+  }catch(error){
+    localStorage.clear();
+    next({name: 'Login'});
+  }
+
+
+  }
+  next()
 })
 
 export default router

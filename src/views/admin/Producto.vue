@@ -35,7 +35,7 @@
     
     <template #footer>
         <Button label="Cerrar" icon="pi pi-times" @click="closeBasic" class="p-button-text"/>
-        <Button label="Guardar" icon="pi pi-check" @click="guardarProducto" autofocus />
+        <Button :label="display_modificar_producto?'Modificar':'Guardar'" icon="pi pi-check" @click="guardarProducto" autofocus />
     </template>
 </Dialog>
 <DataTable :value="productos" >
@@ -44,13 +44,21 @@
     <Column field="cantidad" header="Cantidad"></Column>
     <Column :exportable="false">
             <template #body="slotProps">
-                <Button icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" @click="editProduct(slotProps.data)" />
-                <Button icon="pi pi-trash" class="p-button-rounded p-button-warning" @click="confirmDeleteProduct(slotProps.data)" />
+                <Button icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" @click="editarProducto(slotProps.data)" />
+                <Button icon="pi pi-trash" class="p-button-rounded p-button-warning" @click="openEliminar(slotProps.data)" />
             </template>
         </Column>
 </DataTable>
 
+{{producto}}
 
+<Dialog header="Header" v-model:visible="displayEliminar" :style="{width: '50vw'}">
+    <p>¿Está seguro de Eliminar el Producto?.</p>
+    <template #footer>
+        <Button label="No" icon="pi pi-times" @click="closeEliminar" class="p-button-text"/>
+        <Button label="Si" icon="pi pi-check" @click="eliminarProducto" autofocus />
+    </template>
+</Dialog>
   
 </template>
 
@@ -74,36 +82,104 @@ Column,
     return {
       productos: [],
       display_nuevo_producto: false,
+      display_modificar_producto: false,
       producto: {
         titulo: '',
         precio: 0,
         cantidad: 0
-      }
+      },
+      displayEliminar: false
     }
   },
   async mounted(){
-    let datos = await productoService.listar();
-    this.productos = datos.data
+    try {
+      let datos = await productoService.listar();
+      this.productos = datos.data
+    } catch (error) {
+      console.log(error);
+      this.$router.push({name: "Login"}) //redireccionar
+      localStorage.removeItem("token");
+    }
+    
   },
   methods: {
 
     modalNuevoProducto() {
         this.display_nuevo_producto = true;
+        this.producto = {}
     },
      closeBasic() {
         this.display_nuevo_producto = false;
+        this.display_modificar_producto = false
     },
     async guardarProducto(){
-      var formData = new FormData();
+      if(this.display_modificar_producto){
+        //modificar
+
+         var formData2 = new FormData();
+      formData2.append("titulo", this.producto.titulo);
+      formData2.append("precio", this.producto.precio);
+      formData2.append("cantidad", this.producto.cantidad);
+
+      try{
+          var dato2 = await productoService.modificar(formData2, this.producto.id);
+            console.log(dato2);
+            
+            this.closeBasic();
+            //this.productos.push(this.producto);
+      }catch(err){
+      // toast (mensaje de error)
+      console.log(err)
+      }
+
+      }else{
+        //Nuevo Producto
+         var formData = new FormData();
       formData.append("titulo", this.producto.titulo);
       formData.append("precio", this.producto.precio);
       formData.append("cantidad", this.producto.cantidad);
 
-      var dato = await productoService.guardar(formData);
+      try{
+          var dato = await productoService.guardar(formData);
+            console.log(dato);
+            
+            this.closeBasic();
+            this.productos.push(this.producto);
+      }catch(err){
+      // toast (mensaje de error)
+      console.log(err)
+      }
+      }
+     
+      
+    },
+    editarProducto(dato){
+      console.log(dato.titulo);
+      this.producto = dato;
+      this.display_modificar_producto = true
+      this.display_nuevo_producto = true;
+    },
+    openEliminar(dato){
+      this.displayEliminar = true
+      this.producto = dato
       console.log(dato);
-      this.closeBasic();
+    },
+    closeEliminar(){
+      this.displayEliminar = false
+    },
+    async eliminarProducto(){
+      try{
+          var dato = await productoService.eliminar(this.producto.id);
+            console.log(dato);
+            
+            this.closeEliminar();
+      }catch(err){
+      // toast (mensaje de error)
+      console.log(err)
+      }
 
     }
+
 
   }
 

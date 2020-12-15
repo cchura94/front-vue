@@ -23,7 +23,7 @@ export default {
         {
           label: "INICIO",
           icon: "pi pi-fw pi-home",
-          url: "/",
+          to: "/",
         },
         {
           label: "PRODUCTOS",
@@ -32,7 +32,7 @@ export default {
             {
               label: "Lo Nuevo",
               icon: "pi pi-fw pi-user-plus",
-              url: "/productos",
+              to: "/productos",
             },
             {
               label: "Destacados",

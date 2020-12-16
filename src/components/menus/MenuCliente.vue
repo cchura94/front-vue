@@ -1,24 +1,53 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
-
-  <MenuCliente :model="items">
+  
+  <MenuCliente :model="items" style="background-color:#2196F3;">
     <template #start>
       <img alt="logo" src="../../assets/logo.png" height="40" class="p-mr-2" />
+
+        <Button icon="pi pi-arrow-right" @click="visibleLeft = true" v-if="$route.meta.requireAuth" />
+
+
     </template>
-    <template #end>
+    <template #end v-if="$route.meta.requireAuth">
       PERFIL
     </template>
   </MenuCliente>
+
+<Sidebar v-model:visible="visibleLeft" style="background-color: #2196F3">
+	
+  <div class="perfil">
+        <img alt="user header" src="../../assets/logo.png" class="img-perfil" width="30%" style="border-radius:75%">
+    
+        <p>cristian@gmail.com</p> 
+    
+        <Button icon="pi pi-check" label="Perfil" />
+        <Button icon="pi pi-fw pi-power-off" label="Salir" class="p-button-secondary" style="margin-left: .5em" />
+   
+
+  </div>
+        
+
+  <PanelMenu :model="items_admin" />
+
+</Sidebar>
+
+
 </template>
 
 <script>
+import Sidebar from 'primevue/sidebar';
+import PanelMenu from 'primevue/panelmenu';
+
+
 export default {
+  components: {
+    Sidebar,
+    PanelMenu,
+  },
   data() {
     return {
       visible: true,
+      visibleLeft: false,
       items: [
         {
           label: "INICIO",
@@ -38,67 +67,111 @@ export default {
               label: "Destacados",
               icon: "pi pi-fw pi-user-minus",
             },
-            {
-              label: "Categorias",
-              icon: "pi pi-fw pi-users",
-              items: [
-                {
-                  label: "Buscar",
-                  icon: "pi pi-fw pi-filter",
-                  items: [
-                    {
-                      label: "Print",
-                      icon: "pi pi-fw pi-print",
-                    },
-                  ],
-                },
-                {
-                  icon: "pi pi-fw pi-bars",
-                  label: "Lista de categorias",
-                },
-              ],
-            },
           ],
         },
         {
-          label: "EVENTOS",
+          label: "NOSOTROS",
           icon: "pi pi-fw pi-calendar",
-          items: [
-            {
-              label: "Edit",
-              icon: "pi pi-fw pi-pencil",
-              items: [
-                {
-                  label: "Save",
-                  icon: "pi pi-fw pi-calendar-plus",
-                },
-                {
-                  label: "Delete",
-                  icon: "pi pi-fw pi-calendar-minus",
-                },
-              ],
-            },
-            {
-              label: "Archieve",
-              icon: "pi pi-fw pi-calendar-times",
-              items: [
-                {
-                  label: "Remove",
-                  icon: "pi pi-fw pi-calendar-minus",
-                },
-              ],
-            },
-          ],
+          to: '/acerca'
         },
         {
           label: "INGRESAR",
           icon: "pi pi-fw pi-power-off",
-          to: "/login",
+          
+          command: (event) => {
+            // event.originalEvent: Browser event
+            // event.item: Menuitem instance
+            console.log(event.item)
+           
+        }, 
+        to: "/login"         
+
         },
       ],
+      items_admin:  [
+                {
+                   label: 'ADMINISTRADOR',
+                   icon:'pi pi-fw pi-file',
+                   to: "/admin"
+                },
+                {
+                   label: 'PRODUCTO',
+                   icon:'pi pi-fw pi-pencil',
+                   items: [
+                      {
+                         label: 'Lista de Producto',
+                         icon:'pi pi-fw pi-align-left',
+                         to: "/admin/producto"
+                      },
+                      {
+                         label: 'Right',
+                         icon:'pi pi-fw pi-align-right'
+                      }
+                   ]
+                },
+                {
+                   label: 'CLIENTES',
+                   icon:'pi pi-fw pi-user',
+                   items: [
+                      {
+                         label: 'Nuevo Cliente',
+                         icon:'pi pi-fw pi-user-plus',
+                         to:"/admin/cliente/nuevo"
+
+                      },
+                      {
+                         label: 'Lista Clientes',
+                         icon:'pi pi-fw pi-user-minus',
+                         to: "/admin/cliente"
+                      },
+                   ]
+                },
+                {
+                   label: 'PEDIDO',
+                   icon:'pi pi-fw pi-calendar',
+                   items: [
+                      {
+                         label: 'Nuevo Pedido',
+                         icon:'pi pi-fw pi-pencil',
+                         to: "/admin/pedido/nuevo"
+                      },
+                      {
+                         label: 'Lista Pedidos',
+                         icon:'pi pi-fw pi-calendar-times',
+                         to: "/admin/pedido"
+                      }
+                   ]
+                },
+                {
+                   label: 'USUARIOS',
+                   icon:'pi pi-fw pi-calendar',
+                   items: [
+                      {
+                         label: 'Nuevo Usuario',
+                         icon:'pi pi-fw pi-pencil',
+                         to: "/admin/pedido/nuevo"
+                      },
+                      {
+                         label: 'Lista Usuarios',
+                         icon:'pi pi-fw pi-calendar-times',
+                         to: "/admin/pedido"
+                      }
+                   ]
+                }
+             ]
     };
   },
 };
 </script>
 
-<style></style>
+<style>
+.img-perfil {
+    width: 56px;
+    margin: 10px;
+}
+.perfil{
+  text-align: center;
+  background-color: "#ccc";
+  color: "#fff"
+}
+</style>

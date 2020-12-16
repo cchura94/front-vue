@@ -25,7 +25,7 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
-    meta: {requireAuth: true}
+    
   },
   {
     path: '/about',
@@ -38,8 +38,9 @@ const routes = [
   },
   {
     path: '/productos',
-    name: 'Producto',
-    component: () => import(/* webpackChunkName: "producto" */ '../views/cliente/Producto.vue')
+    name: 'Producto_inicio',
+    component: () => import(/* webpackChunkName: "productos" */ '../views/cliente/Producto.vue')
+  
   },
   {
     path: '/acerca',
@@ -69,18 +70,19 @@ const routes = [
         name: 'Producto',
         component: () => import(/* webpackChunkName: "producto" */ '../views/admin/Producto.vue'),
     beforeEnter: authGuard,
+    meta: {requireAuth: true},
       },
       {
         path: "pedido",
         name: 'Pedido',
-        component: () => import(/* webpackChunkName: "pedidos" */ '../views/admin/Pedidos.vue')
-
+        component: () => import(/* webpackChunkName: "pedidos" */ '../views/admin/Pedidos.vue'),
+        meta: {requireAuth: true},
       },
       {
         path: "cliente",
         name: 'Cliente',
-        component: () => import(/* webpackChunkName: "cliente" */ '../views/admin/Cliente.vue')
-
+        component: () => import(/* webpackChunkName: "cliente" */ '../views/admin/Cliente.vue'),
+        meta: {requireAuth: true},
       }
     ]
   }

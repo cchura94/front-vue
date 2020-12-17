@@ -1,13 +1,10 @@
 <template>
-  <h1>Clientes</h1>
-  <router-view />
-  
+  <h1>Nuevo CLIENTE</h1>
 </template>
 
 <script>
-
 export default {
-  
+
 }
 </script>
 

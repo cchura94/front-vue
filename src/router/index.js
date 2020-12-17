@@ -83,6 +83,18 @@ const routes = [
         name: 'Cliente',
         component: () => import(/* webpackChunkName: "cliente" */ '../views/admin/Cliente.vue'),
         meta: {requireAuth: true},
+        children: [
+          {
+            path: "",
+            name: "ListaCliente",
+            component: () => import(/* webpackChunkName: "nuevo_cliente" */ '../components/admin/cliente/Lista.vue'),
+          },
+          {
+            path: "nuevo",
+            name: "NuevoCliente",
+            component: () => import(/* webpackChunkName: "nuevo_cliente" */ '../components/admin/cliente/nuevo.vue'),
+          }
+        ]
       }
     ]
   }

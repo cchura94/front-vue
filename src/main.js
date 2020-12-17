@@ -5,8 +5,9 @@ import router from './router'
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import Menubar from 'primevue/menubar';
-import ToastService from 'primevue/toastservice';
+
 import Toast from 'primevue/toast';
+import ToastService from 'primevue/toastservice';
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';

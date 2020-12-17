@@ -4,6 +4,7 @@
 
 <Dialog header="Nuevo Producto" v-model:visible="display_nuevo_producto" :style="{width: '50vw'}">
    
+   
 <div class="p-grid p-fluid">
     <div class="p-col-12 p-md-4">
         <div class="p-inputgroup">
@@ -24,8 +25,20 @@
 
     <div class="p-col-12 p-md-4">
         <div class="p-inputgroup">
-            <span class="p-inputgroup-addon">Nro</span>
+            <span class="p-inputgroup-addon">Cantidad</span>
             <InputText placeholder="Cantidad" v-model="producto.cantidad" />
+        </div>
+    </div>
+    <div class="p-col-12 p-md-6">
+        <div class="p-inputgroup">
+            <span class="p-inputgroup-addon">Imagen</span>
+            <input type="file" @change="onImagenSeleccionado">
+        </div>
+    </div>
+    <div class="p-col-12 p-md-6">
+        <div class="p-inputgroup">
+          
+          <img :src="'http://127.0.0.1:3000/imagenes/'+ producto.imagen" alt="">
         </div>
     </div>
 </div>
@@ -60,6 +73,8 @@
     </template>
 </Dialog>
   
+  <Toast />
+
 </template>
 
 <script>
@@ -69,6 +84,8 @@ import InputText from 'primevue/inputtext';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 
+import Toast from 'primevue/toast';
+
 import * as productoService from './../../services/productoService'
 
 export default {
@@ -77,6 +94,7 @@ export default {
     InputText,
     DataTable,
 Column,
+Toast
   },
   data(){
     return {
@@ -88,10 +106,13 @@ Column,
         precio: 0,
         cantidad: 0
       },
-      displayEliminar: false
+      displayEliminar: false,
+      imagenSeccionada: null
     }
   },
   async mounted(){
+    //this.$toast.add({severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000});
+            
     try {
       let datos = await productoService.listar();
       this.productos = datos.data
@@ -112,6 +133,12 @@ Column,
         this.display_nuevo_producto = false;
         this.display_modificar_producto = false
     },
+    onImagenSeleccionado(event){
+      //console.log("imagen seleccionado", event)
+
+      this.imagenSeccionada = event.target.files[0]
+      console.log(this.imagenSeccionada);
+    },
     async guardarProducto(){
       if(this.display_modificar_producto){
         //modificar
@@ -120,6 +147,7 @@ Column,
       formData2.append("titulo", this.producto.titulo);
       formData2.append("precio", this.producto.precio);
       formData2.append("cantidad", this.producto.cantidad);
+      formData2.append("imagen", this.imagenSeccionada, this.imagenSeccionada.name);
 
       try{
           var dato2 = await productoService.modificar(formData2, this.producto.id);
@@ -138,10 +166,12 @@ Column,
       formData.append("titulo", this.producto.titulo);
       formData.append("precio", this.producto.precio);
       formData.append("cantidad", this.producto.cantidad);
+formData.append("imagen", this.imagenSeccionada, this.imagenSeccionada.name);
 
       try{
           var dato = await productoService.guardar(formData);
             console.log(dato);
+            this.$toast.add({severity: 'success', summary: 'Producto registrado', detail: 'El producto se ha registrado correctamente', life: 3000});
             
             this.closeBasic();
             this.productos.push(this.producto);

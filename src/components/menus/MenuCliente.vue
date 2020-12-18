@@ -9,7 +9,9 @@
 
     </template>
     <template #end v-if="$route.meta.requireAuth">
-      PERFIL
+      
+      <Button @click="openPerfil" v-if="$route.meta.requireAuth" >{{ usuario.correo }}</Button>
+
     </template>
   </MenuCliente>
 
@@ -44,8 +46,12 @@ export default {
     Sidebar,
     PanelMenu,
   },
+  mounted(){
+this.usuario = JSON.parse(atob(localStorage.getItem("token"))).usuario
+  },
   data() {
     return {
+      usuario: {},
       visible: true,
       visibleLeft: false,
       items: [
@@ -159,8 +165,13 @@ export default {
                    ]
                 }
              ]
-    };
+    }
   },
+  methods:{
+    openPerfil(){
+      this.$router.push({name: "Perfil"})
+    }
+  }
 };
 </script>
 

@@ -1,10 +1,11 @@
 <template>
    <Menu />
-
+{{ usuario }}
   <router-view />
 
    <Footer></Footer>
   
+    
 </template>
 
 <script>
@@ -16,7 +17,16 @@ export default {
    components:{
       Menu,
       Footer
-   }
+   },
+   data(){
+      return {
+
+         usuario: {}
+      }
+   },
+     mounted(){
+    this.usuario = JSON.parse(atob(localStorage.getItem("token"))).usuario
+  }
     
 }
 </script>

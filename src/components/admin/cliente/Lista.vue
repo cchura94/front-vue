@@ -1,6 +1,6 @@
 <template>
   {{ clientes }}
-  <Button routerLink="/admin/cliente/nuevo">Nuevo Cliente</Button>
+  <Button router-Link="/admin/cliente/nuevo">Nuevo Cliente</Button>
   <table border="1">
     <thead>
       <tr>

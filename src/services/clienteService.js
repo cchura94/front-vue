@@ -19,3 +19,7 @@ export function modificar(datos, id) {
 export function eliminar(id) {
     return http().delete('/persona/'+id);
 }
+
+export function verificar_datos_cliente(id_user) {
+    return http().get('/persona/'+id_user);
+}

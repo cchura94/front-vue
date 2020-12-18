@@ -43,7 +43,7 @@ export default {
     async ingresar() {
       try {
         let resp = await ingresar(this.usuario);
-        console.log(resp.data.data.datos);
+        console.log(resp.data);
         localStorage.setItem(
           "token",
           btoa(JSON.stringify(resp.data.data.datos))

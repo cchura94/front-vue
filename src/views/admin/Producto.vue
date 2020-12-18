@@ -38,7 +38,7 @@
     <div class="p-col-12 p-md-6">
         <div class="p-inputgroup">
           
-          <img :src="'http://127.0.0.1:3000/imagenes/'+ producto.imagen" alt="">
+          <img :src="'http://127.0.0.1:3000/imagenes/'+ producto.imagen" alt="" width="300">
         </div>
     </div>
 </div>

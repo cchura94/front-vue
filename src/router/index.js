@@ -66,6 +66,13 @@ const routes = [
     meta: {requireAuth: true},
     children: [
       {
+        path: "perfil",
+        name: "Perfil",
+        component: () => import(/* webpackChunkName: "perfil" */ '../views/admin/Perfil.vue'), 
+        beforeEnter: authGuard,
+    meta: {requireAuth: true},
+      },
+      {
         path: "producto",
         name: 'Producto',
         component: () => import(/* webpackChunkName: "producto" */ '../views/admin/Producto.vue'),

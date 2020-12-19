@@ -8,9 +8,9 @@
 
 
     </template>
-    <template #end v-if="$route.meta.requireAuth">
+    <template #end v-if="usuario">
       
-      <Button @click="openPerfil" v-if="$route.meta.requireAuth" >{{ usuario.correo }}</Button>
+      <Button @click="openPerfil">{{ usuario.correo }}</Button>
 
     </template>
   </MenuCliente>
@@ -47,7 +47,7 @@ export default {
     PanelMenu,
   },
   mounted(){
-this.usuario = JSON.parse(atob(localStorage.getItem("token"))).usuario
+//this.usuario = JSON.parse(atob(localStorage.getItem("token"))).usuario
   },
   data() {
     return {

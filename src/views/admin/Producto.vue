@@ -51,7 +51,7 @@
         <Button :label="display_modificar_producto?'Modificar':'Guardar'" icon="pi pi-check" @click="guardarProducto" autofocus />
     </template>
 </Dialog>
-<DataTable :value="productos" >
+<DataTable :value="productos" :paginator="true" :rows="5">
     <Column field="titulo" header="Titulo"></Column>
     <Column field="precio" header="Precio"></Column>
     <Column field="cantidad" header="Cantidad"></Column>

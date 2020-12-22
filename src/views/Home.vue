@@ -2,13 +2,20 @@
   
   <Sidebar v-model:visible="carritoPanel" position="right">
 
+    <Card>
+      <template #title>
+        Total: Bs. {{ total }}
+        <Button label="Realizar Pedido" @click="realizarPedido" />
+    </template>
+    </Card>
+
   <Card v-for="(c,index) in carrito" :key="index">
 
     <template #content>
         {{ c.titulo }} - Bs. {{ c.precio }}
     </template>
     <template #footer>
-        <Button icon="pi pi-check" label="x" @click="quitarCarrito(c, index)" />
+        <Button label="x" @click="quitarCarrito(c, index)" />
     </template>
 </Card>
 </Sidebar>
@@ -35,31 +42,46 @@
   </div>
 </div>
 
-
+{{ ped }}
+<Toast />
 </template>
 
 <script>
 import Card from 'primevue/card';
 // @ is an alias to /src
 import * as inicioService from './../services/inicioService'
+import * as clienteService from "./../services/clienteService"
+import * as pedidoService from "./../services/pedidoService"
+
 import Sidebar from 'primevue/sidebar';
+import Toast from 'primevue/toast';
 export default {
   name: 'Home',
   components: {
     Card,
-    Sidebar
+    Sidebar,
+    Toast
   },
   data(){
     return {
       productos: [],
       carrito: [],
-      carritoPanel:false
+      carritoPanel:false,
+      total: 0,
+      usuario: {},
+      ped: {}
     }
   },
   async mounted(){
      let datos = await inicioService.listar();
      console.log(datos)
      this.productos = datos.data
+
+     this.usuario = JSON.parse(atob(localStorage.getItem("token"))).usuario
+        let d = await clienteService.verificar_datos_cliente(this.usuario.id);
+        this.usuario.cliente = d.data;
+        console.log(this.usuario.cliente);
+
     if(!localStorage.getItem("carrito")){
       localStorage.setItem("carrito","[]")
     }
@@ -68,12 +90,33 @@ export default {
     addCarrito(prod){      
       this.carrito = JSON.parse(localStorage.getItem("carrito"));
       this.carrito.push(prod);
+      this.total += prod.precio
       localStorage.setItem("carrito", JSON.stringify(this.carrito))
+      this.$toast.add({severity: 'success', summary: 'Agregado al carrito', detail: 'Producto Agregado al carrito', life: 3000});
+      
     },
     quitarCarrito(carr, index){
       this.carrito = JSON.parse(localStorage.getItem("carrito"));
       this.carrito.splice(index, 1);
+      this.total -= carr.precio
       localStorage.setItem("carrito", JSON.stringify(this.carrito))
+    },
+    async realizarPedido(){
+      //this.usuario = JSON.parse(atob(localStorage.getItem("token"))).usuario
+      let prod = [];
+      this.carrito.forEach
+      this.carrito.forEach(p => {
+        prod.push(p.id);
+      });
+
+      this.ped = {
+        fecha: "11-23-20",
+        precio_total: this.total,
+        persona_id: this.usuario.cliente.id,
+        productos: prod
+      }
+      let resp = await pedidoService.guardar(this.ped);
+      console.log(resp)
     }
   }
 }

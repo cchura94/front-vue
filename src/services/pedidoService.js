@@ -1,12 +1,12 @@
-import { httpFile } from './http_service'
+import { httpFile, http } from './http_service'
 
 
 export function listar() {
-    return httpFile().get('/producto');
+    return http().get('/pedido');
 }
 
 export function guardar(datos) {
-    return httpFile().post('/producto', datos);
+    return http().post('/pedido/nuevo-pedido', datos);
 }
 
 //pendiente
